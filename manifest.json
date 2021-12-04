@@ -1,0 +1,12 @@
+{
+  "domain": "mastertherm",
+  "name": "MasterTherm",
+  "config_flow": true,
+  "documentation": "https://www.home-assistant.io/integrations/mastertherm",
+  "requirements": ["git+https://github.com/sahulkrishan/python-masterthermconnect.git@main#python-masterthermconnect==0.0.32"],
+  "codeowners": [
+    "@sahulkrishan"
+  ],
+  "iot_class": "cloud_push",
+  "version": "0.0.1"
+}
