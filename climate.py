@@ -86,9 +86,9 @@ class MasterThermClimate(ClimateEntity):
     #     }
 
     @property
-    def available(self) -> bool:
+    async def async_available(self) -> bool:
         """Return True if entity is available."""
-        return self._auth.isConnected
+        return await self._auth.isConnected()
 
     async def async_update(self):
         """Retrieve latest state."""

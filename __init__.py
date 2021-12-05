@@ -7,6 +7,7 @@ import async_timeout
 import masterthermconnect
 from aiohttp import ClientSession
 from homeassistant.config_entries import ConfigEntry
+from homeassistant.helpers.aiohttp_client import async_create_clientsession
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import ConfigEntryNotReady
 from masterthermconnect.auth import Auth
@@ -28,7 +29,11 @@ PLATFORMS: list[str] = ["climate"]
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up MasterTherm from a config entry."""
 
-    auth = Auth(entry.data["username"], entry.data["password"], ClientSession())
+    auth = Auth(
+        entry.data["username"],
+        entry.data["password"],
+        async_create_clientsession(hass),
+    )
 
     try:
         await auth.connect()
