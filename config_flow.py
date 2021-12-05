@@ -1,24 +1,24 @@
 """Config flow for MasterTherm integration."""
 from __future__ import annotations
+
 import logging
-from aiohttp import ClientSession
 from typing import Any
+
 import voluptuous as vol
-
-from masterthermconnect.exceptions import (
-    MasterThermAuthenticationError,
-    MasterThermConnectionError,
-    MasterThermUnsupportedRole,
-    MasterThermResponseFormatError,
-    MasterThermTokenInvalid,
-)
-from masterthermconnect.auth import Auth
-
+from aiohttp import ClientSession
 from homeassistant import config_entries
+from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
 from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResult
 from homeassistant.exceptions import HomeAssistantError
-from homeassistant.const import CONF_PASSWORD, CONF_USERNAME
+from masterthermconnect.auth import Auth
+from masterthermconnect.exceptions import (
+    MasterThermAuthenticationError,
+    MasterThermConnectionError,
+    MasterThermResponseFormatError,
+    MasterThermTokenInvalid,
+    MasterThermUnsupportedRole,
+)
 
 from .const import DOMAIN
 

@@ -16,18 +16,18 @@ HVAC_MODE_MAP = {
     "auto": HVAC_MODE_AUTO,
 }
 
+from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
+from masterthermconnect.auth import Auth
 from masterthermconnect.exceptions import (
     MasterThermAuthenticationError,
     MasterThermConnectionError,
-    MasterThermUnsupportedRole,
     MasterThermResponseFormatError,
     MasterThermTokenInvalid,
+    MasterThermUnsupportedRole,
 )
-from masterthermconnect.auth import Auth
 from masterthermconnect.thermostat import Thermostat
 
 from .const import AUTH, DOMAIN
-from homeassistant.const import ATTR_TEMPERATURE, TEMP_CELSIUS
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -39,7 +39,7 @@ async def async_setup_entry(hass, config_entry, async_add_entities):
     """Set up entry."""
     auth: Auth = hass.data[DOMAIN][config_entry.entry_id][AUTH]
     if not (modules := auth.getModules()):
-        _LOGGER.info("No modules found")
+        _LOGGER.debug("No modules found")
         return
 
     entities = []
@@ -63,8 +63,10 @@ class MasterThermClimate(ClimateEntity):
 
     def __init__(self, auth, device):
         """Initialize the entity."""
+        self._auth = auth
         self._thermostat = Thermostat(auth, device["module_id"], device["device_id"])
         self._attr_name = device["module_name"]
+        self._attr_unique_id = device["module_name"]
         self._module_id = device["module_id"]
         self._device_id = device["device_id"]
         self._device_name = device["device_id"]
@@ -83,22 +85,18 @@ class MasterThermClimate(ClimateEntity):
     #         "via_device": (hue.DOMAIN, self.api.bridgeid),
     #     }
 
-    # async def async_will_remove_from_hass(self) -> None:
-    #     """Cancel refresh callback when entity is being removed from hass."""
-    #     self.async_cancel_refresh_callback()
-
-    async def async_set_temperature(self, **kwargs):
-        """Set new target temperature."""
-        await self._thermostat.setTemperature(kwargs.get(ATTR_TEMPERATURE))
+    @property
+    def available(self) -> bool:
+        """Return True if entity is available."""
+        return self._auth.isConnected
 
     async def async_update(self):
         """Retrieve latest state."""
         return await self._thermostat.getData()
 
-    @property
-    def available(self) -> bool:
-        """Return True if entity is available."""
-        return True
+    async def async_set_temperature(self, **kwargs):
+        """Set new target temperature."""
+        await self._thermostat.setTemperature(kwargs.get(ATTR_TEMPERATURE))
 
     @property
     def current_temperature(self):

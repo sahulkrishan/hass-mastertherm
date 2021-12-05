@@ -3,7 +3,7 @@
   "name": "MasterTherm",
   "config_flow": true,
   "documentation": "https://www.home-assistant.io/integrations/mastertherm",
-  "requirements": ["git+https://github.com/sahulkrishan/python-masterthermconnect.git@main#python-masterthermconnect==0.0.32"],
+  "requirements": ["git+https://github.com/sahulkrishan/python-masterthermconnect.git@main#python-masterthermconnect==0.0.33"],
   "codeowners": [
     "@sahulkrishan"
   ],
